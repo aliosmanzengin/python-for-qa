@@ -29,7 +29,6 @@ Click on checkbox “I allow Grid Dynamics to contact me”
 Ensure Contact button is inactive
 """
 from selenium.webdriver import ActionChains
-from selenium.webdriver.common.by import By
 from utils.utils import SeleniumUtils
 
 
@@ -39,10 +38,10 @@ class MainPage:
 
     # Elements
     def hover_element_xpath(self):
-        return "//gd-header-desktop-menu//nav//ul/li[4]/a"
+        return "//*[@class ='section-button link'] [contains(text(), 'About')]"
 
     def click_element_xpath(self):
-        return "//gd-header-desktop-menu//nav//ul/li[4]//div//ul/li[2]/a"
+        return "//*[@class ='submenu-label-item'] [contains(text(), 'Leadership')]"
 
     # Actions
     def navigate_to_page(self, url):
