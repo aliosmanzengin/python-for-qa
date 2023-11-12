@@ -1,55 +1,44 @@
 """
-Case #1:
-
-Open https://blog.griddynamics.com(opens in a new tab)
-Go to “Leadership” under About page
-Find Leonard Livschitz and click on the name
-Verify that information about Leonard has appeared. The text “director of Grid Dynamics’ board of directors since 2006 and the Chief Executive Officer of Grid Dynamics since 2014” is visible.
-
-Case #2:
-
-Open https://blog.griddynamics.com(opens in a new tab)
-Click ‘filter’ (check it’s visible and available)
-Filter by Cloud and DevOps topic
-Check there is more than 1 article
-Reset all filters
-Check the first article in the list is different than in step 4 and check there is more than 1 article.
-
-Case #3:
-
-Open https://blog.griddynamics.com(opens in a new tab)
-Click on Get In Touch button
-Ensure page Contact Us opened
-Fill in the following:
-First Name = Anna, Last Name = Smith
-email = annasmith@griddynamics.com
-select  How did you hear about us? = Online Ads
-Click on checkbox “I have read and accepted the Terms & Conditions and Privacy Policy”
-Click on checkbox “I allow Grid Dynamics to contact me”
-Ensure Contact button is inactive
+gd_blog_page.py
 """
 from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as ec, wait
+
 from utils.utils import SeleniumUtils
+from pages.base_page import BasePage
 
 
-class MainPage:
-    def __init__(self, driver):
-        self.driver = driver
+class MainPage(BasePage):
+    __url = "https://blog.griddynamics.com"
+    __about_section_locator = (By.XPATH, "//*[@class='section-button link'][contains(text(), 'About')]")
+    __leadership_locator = (By.XPATH, "//*[@class ='submenu-label-item'] [contains(text(), 'Leadership')]")
+    __filter_topics_dropdown = (By.ID, "topiclist")
+    __cloud_and_devops_topic_locator = ()
+    __all_topics_locator = ()
+    __cloud_and_devops_articles_list = ()
+    __cloud_and_devops_first_article_locator = ()
+    __media_and_news_locator = ()
 
-    # Elements
-    def hover_element_xpath(self):
-        return "//*[@class ='section-button link'] [contains(text(), 'About')]"
+    def __init__(self, driver: WebDriver):
+        super().__init__(driver)
 
-    def click_element_xpath(self):
-        return "//*[@class ='submenu-label-item'] [contains(text(), 'Leadership')]"
+    @property
+    def devops_articles_list(self) -> list:
+        return super()._get_text(self.__cloud_and_devops_articles_list)
 
-    # Actions
-    def navigate_to_page(self, url):
-        self.driver.get(url)
+    def open(self):
+        super()._open_url(self.__url)
+        self._wait_for_page_load_complete()
 
-    def hover_over_element(self):
-        actions = ActionChains(self.driver)
-        actions.move_to_element(SeleniumUtils.wait_for_element_to_be_visible(self.driver, self.hover_element_xpath())).perform()
+    def _select_topic(self, topic_name: str):
+        self._select_dropdown_by_visible_text(self.__filter_topics_dropdown, topic_name)
 
-    def click_on_visible_element(self):
-        SeleniumUtils.click_element_with_wait(self.driver, self.click_element_xpath())
+    def go_to_leadership(self):
+        super()._hover(self.__about_section_locator)
+        super()._click(self.__leadership_locator)
+
+    def filter_devops_topic(self):
+        self._select_topic("Cloud and DevOps")
+

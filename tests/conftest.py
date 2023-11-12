@@ -1,3 +1,7 @@
+"""
+conftest.py
+"""
+
 import logging
 
 import pytest
@@ -28,15 +32,6 @@ def custom_driver(request):
     logger.info(f"Quitting {browser} Driver")
     my_driver.quit()
 
-
-# def pytest_configure(config):
-#     # Additional configuration can be added here if needed
-#     # For example, setting up a file handler to log to a file:
-#     if config.option.log_file:
-#         file_handler = logging.FileHandler(config.option.log_file, mode='w')
-#         file_handler.setLevel(logging.INFO)
-#         logger.addHandler(file_handler)
-#
 
 def pytest_addoption(parser):
     parser.addoption(
