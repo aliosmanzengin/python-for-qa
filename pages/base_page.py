@@ -1,6 +1,7 @@
 """
 base_page.py
 """
+from typing import List
 
 from selenium.common import NoSuchElementException
 from selenium.webdriver import ActionChains
@@ -18,12 +19,21 @@ class BasePage:
     def _find(self, locator: tuple) -> WebElement:
         return self._driver.find_element(*locator)
 
+    def _find_elements(self, locator: tuple) -> List[WebElement]:
+        """
+        Finds all elements within the current page that match the specified locator.
+
+        :param locator: A tuple representing the locator strategy and the locator value.
+        :return: A list of WebElement objects that match the given locator.
+        """
+        return self._driver.find_elements(*locator)
+
     def _hover(self, locator: tuple, time: int = 10):
         self._wait_until_element_is_visible(locator, time)
         element = self._find(locator)
         ActionChains(self._driver).move_to_element(element).perform()
 
-    def _type(self, locator: tuple, text: str, time: int = 10):
+    def _write_input(self, locator: tuple, text: str, time: int = 10):
         self._wait_until_element_is_visible(locator, time)
         self._find(locator).send_keys(text)
 
