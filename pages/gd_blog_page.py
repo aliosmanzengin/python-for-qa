@@ -19,11 +19,12 @@ class MainPage(BasePage):
     __leadership_locator = (By.XPATH, "//*[@class='submenu-label-item'][contains(text(), 'Leadership')]")
     __filter_topics_dropdown = (By.ID, "topiclist")
     __all_articles_locator = (By.XPATH, "//section//a[contains(@class,'cardtocheck')]")
-    __cloud_and_devops_articles = (
-    By.XPATH, "//section[contains(@class,'cloud-and-devops')]//a[contains(@class,'cardtocheck')]")
+    __cloud_and_devops_articles = (By.XPATH, "//section[contains(@class,'cloud-and-devops')]//a[contains(@class,'cardtocheck')]")
     __cloud_and_devops_locator = (By.XPATH, f"//*[@id='topiclist']//*[contains(text(), 'Cloud and DevOps')]")
     __reset_filter_locator = (By.XPATH, f"//*[@id='topiclist']//*[contains(text(), 'All topics')]")
-    __get_in_touch_locator = (By.XPATH, "//*[contains(text(), 'Get in touch')][1]")
+    __get_in_touch_locator_webview = (By.XPATH, "(//*[contains(text(), 'Get in touch') and not (ancestor::*[contains(@class, 'mobile-menu')])])")
+    __get_in_touch_locator_mobileview = (By.XPATH, "(//*[contains(text(), 'Get in touch') and (ancestor::*[contains(@class, 'mobile-menu')])])")
+    # __get_in_touch_locator_webview = (By.XPATH, "//*[@id='woe']/gd-header/header/div/div/a[2]/span[2]/span")
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -37,8 +38,8 @@ class MainPage(BasePage):
         super()._click(self.__leadership_locator)
 
     def go_to_get_in_touch(self):
-        super()._hover(self.__get_in_touch_locator)
-        super()._click(self.__get_in_touch_locator)
+        super()._hover(self.__get_in_touch_locator_webview)
+        super()._click_with_js(self.__get_in_touch_locator_webview)
 
     def get_devops_articles(self) -> List[WebElement]:
         return self._find_elements(self.__cloud_and_devops_articles)

@@ -45,6 +45,17 @@ class BasePage:
         self._wait_until_element_is_visible(locator, time)
         self._find(locator).click()
 
+    def _click_with_js(self, locator: tuple, time: int = 10):
+        """
+        Clicks an element using JavaScript.
+
+        :param locator: A tuple representing the locator strategy and the locator value.
+        :param time: The maximum amount of time to wait for the element to become visible.
+        """
+        self._wait_until_element_is_visible(locator, time)
+        element = self._find(locator)
+        self._driver.execute_script("arguments[0].click();", element)
+
     def _select_dropdown_by_visible_text(self, locator: tuple, text: str, time: int = 10):
         """
         Selects an option from a dropdown by its visible text.
