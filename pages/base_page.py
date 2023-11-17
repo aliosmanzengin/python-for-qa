@@ -5,14 +5,22 @@ from typing import List
 
 from selenium.common import NoSuchElementException
 from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
+from utils.utils import handle_stale_element
+
 
 class BasePage:
+
+    __accept_button_locator = (By.ID, "onetrust-accept-btn-handler")
+    __cookie_settings_button_locator = (By.ID, "onetrust-pc-btn-handler")
+    __reject_button_locator = (By.XPATH, "//*[@class='ot-pc-refuse-all-handler']")
+
     def __init__(self, driver: WebDriver):
         self._driver = driver
 
@@ -28,11 +36,13 @@ class BasePage:
         """
         return self._driver.find_elements(*locator)
 
+    @handle_stale_element
     def _hover(self, locator: tuple, time: int = 10):
         self._wait_until_element_is_visible(locator, time)
         element = self._find(locator)
         ActionChains(self._driver).move_to_element(element).perform()
 
+    @handle_stale_element
     def _write_input(self, locator: tuple, text: str, time: int = 10):
         self._wait_until_element_is_visible(locator, time)
         self._find(locator).send_keys(text)
@@ -41,6 +51,7 @@ class BasePage:
         self._wait_until_element_is_visible(locator, time)
         self._find(locator).clear()
 
+    @handle_stale_element
     def _click(self, locator: tuple, time: int = 10):
         self._wait_until_element_is_visible(locator, time)
         self._find(locator).click()
@@ -56,6 +67,7 @@ class BasePage:
         element = self._find(locator)
         self._driver.execute_script("arguments[0].click();", element)
 
+    @handle_stale_element
     def _select_dropdown_by_visible_text(self, locator: tuple, text: str, time: int = 10):
         """
         Selects an option from a dropdown by its visible text.
@@ -83,6 +95,7 @@ class BasePage:
     def current_url(self) -> str:
         return self._driver.current_url
 
+    @handle_stale_element
     def _is_displayed(self, locator: tuple) -> bool:
         try:
             return self._find(locator).is_displayed()
@@ -92,6 +105,7 @@ class BasePage:
     def _open_url(self, url: str):
         self._driver.get(url)
 
+    @handle_stale_element
     def _get_text(self, locator: tuple, time: int = 10) -> str:
         self._wait_until_element_is_visible(locator, time)
         return self._find(locator).text
@@ -103,11 +117,28 @@ class BasePage:
         :param locator: A tuple representing the locator strategy and the locator value.
         """
         element = self._find(locator)
-        desired_y = (element.location['y'] - self._driver.execute_script('return window.innerHeight / 2;'))
+        element_y = element.location['y']
+        window_height = self._driver.execute_script('return window.innerHeight;')
         current_y = self._driver.execute_script('return window.pageYOffset;')
-        self._driver.execute_script(f"window.scrollTo(0, {current_y + desired_y});")
+
+        if not (current_y + window_height / 4 < element_y < current_y + 3 * window_height / 4):
+            desired_y = (element_y - window_height / 2)
+            self._driver.execute_script(f"window.scrollTo(0, {current_y + desired_y});")
 
     def _wait_for_page_load_complete(self, timeout=30):
         WebDriverWait(self._driver, timeout).until(
             lambda d: d.execute_script('return document.readyState') == 'complete'
         )
+
+    def handle_cookie_consent(self, accept=True):
+        try:
+            if accept:
+                accept_button = self._find(self.__accept_button_locator)
+                accept_button.click()
+            else:
+                cookie_settings = self._find(self.__cookie_settings_button_locator)
+                cookie_settings.click()
+                reject_button = self._find(self.__reject_button_locator)
+                reject_button.click()
+        except NoSuchElementException:
+            pass

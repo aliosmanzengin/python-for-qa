@@ -22,8 +22,11 @@ def custom_driver(request):
     logger.info(f"Starting {browser} Driver")
     if browser == "chrome":
         my_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        # my_driver = webdriver.Chrome()
     elif browser == "firefox":
-        my_driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+        # my_driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+        my_driver = webdriver.Firefox()
+
     else:
         raise TypeError(f"Invalid browser type: '{browser}'.\nPlease enter chrome or firefox to choose a browser.")
         # my_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))

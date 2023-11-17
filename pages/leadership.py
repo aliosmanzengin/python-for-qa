@@ -2,7 +2,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from pages.base_page import BasePage
-from utils.utils import SeleniumUtils
 
 
 class LeadershipPage(BasePage):

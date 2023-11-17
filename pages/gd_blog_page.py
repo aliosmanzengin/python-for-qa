@@ -9,7 +9,6 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec, wait
 
-from utils.utils import SeleniumUtils
 from pages.base_page import BasePage
 
 
