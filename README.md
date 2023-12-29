@@ -8,7 +8,7 @@ This project is designed to [Your Project Description Here].
 
 - Python 3.8 or higher
 - pip
-- selenium VERSION????
+- selenium VERSION 4
 
 ## Installation
 
