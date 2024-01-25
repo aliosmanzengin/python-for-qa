@@ -1,18 +1,21 @@
 """
 test_gd_blog_web_ui.py
 """
+import logging
+
 import pytest
 
 from pages.contact_us_page import ContatcUsPage
 from pages.gd_blog_page import MainPage
 from pages.leadership import LeadershipPage
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 class TestBlogPage:
 
-    # @pytest.mark.parametrize("username,password", [("my_username", "my_password")])
     @pytest.mark.blogpage
-    # @pytest.mark.ui_tests
+    @pytest.mark.ui_tests
     def test_case_one(self, custom_driver):
         expected_text = ("director of Grid Dynamics’ board of directors since 2006 and the Chief Executive Officer of "
                          "Grid Dynamics since 2014")
@@ -40,8 +43,8 @@ class TestBlogPage:
         assert initial_articles[0].get_attribute('href') != devops_articles[0].get_attribute('href')
 
     @pytest.mark.blogpage
-    @pytest.mark.ui_tests
-    def test_case_three(self, custom_driver):
+    # @pytest.mark.ui_tests
+    def test_contact_us_negative(self, custom_driver):
         blog_page = MainPage(custom_driver)
         blog_page.open()
         blog_page.go_to_get_in_touch()
