@@ -48,3 +48,6 @@ MANIFEST
 
 # Logs
 logs/
+
+# Reports
+reports
